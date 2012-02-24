@@ -1,0 +1,9 @@
+[Applet Factory]
+Id=DynamicSeparatorFactory
+Name=Dynamic Separator Applet Factory
+Description=Dynamic Separator Applet Factory
+
+[DynamicSeparatorApplet]
+Name=Dynamic Separator
+Description=Create a dynamic separator
+Icon=dynamic-separator-applet

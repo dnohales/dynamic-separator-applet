@@ -1,0 +1,98 @@
+#!/usr/bin/env python
+
+from gi.repository import Gtk
+from gi.repository import Gio
+from gi.repository import PanelApplet
+
+class DynamicAppletPreferences():
+    def __init__(self, applet):
+        self.applet = applet
+        
+    def run(self):
+        dialog = Gtk.Dialog()
+        dialog.set_size_request(300, 100)
+        
+        dialog.set_title("Panel separator preferences")
+        dialog.add_button(Gtk.STOCK_CLOSE, 0)
+        
+        box = Gtk.Box(Gtk.Orientation.HORIZONTAL, 0)
+        dialog.get_content_area().pack_start(box, False, False, 30)
+        spin = Gtk.SpinButton.new_with_range(5, 100000, 1)
+        spin.set_numeric(True)
+        self.applet.settings.bind("size", spin, "value", 0)
+        
+        box.pack_start(Gtk.Label("Separator size:"), False, False, 8)
+        box.pack_start(spin, True, True, 8)
+        
+        dialog.show_all()
+        dialog.run()
+        dialog.destroy()
+
+class DynamicApplet(PanelApplet.Applet):
+    FACTORY_ID = "DynamicSeparatorFactory"
+    APPLET_ID = "DynamicSeparatorApplet"
+    SCHEMA = "org.gnome.panel.applet.DynamicSeparator"
+    
+    def fill_applet(self):
+        # create child widget for the applet
+        self.child = Gtk.Label(None)
+        
+        # initialize applet settings
+        self.settings = Gio.Settings.new_with_path(DynamicApplet.SCHEMA, self.get_property("settings_path"))
+        self.settings.set_uint("size", 30)
+        
+        # set applet style (no borders)
+        self.set_name("dynamic-separator-applet")
+        css_provider = Gtk.CssProvider()
+        css_provider.load_from_data("#"+self.get_name()+"{ border-width: 0; }")
+        self.get_style_context().add_provider(css_provider, Gtk.STYLE_PROVIDER_PRIORITY_USER )
+        
+        # build applet
+        self.add(self.child)
+        self.show_all()
+        
+        # adapt applet to the panel background
+        self.set_background_widget(self)
+        
+        # connect signals
+        self.connect("change-background", self.on_change_background)
+        self.connect("change-orient", lambda applet, orient: self.refresh_applet())
+        self.connect("change-size", lambda applet, size: self.refresh_applet())
+        self.settings.connect("changed::size", lambda settings, key: self.refresh_applet())
+        
+        self.build_context_menu()
+        self.refresh_applet()
+        
+    def on_change_background(self, applet, pattern):
+        self.set_background_widget(self)
+        
+    def on_open_preferences(self, action):
+        dialog = DynamicAppletPreferences(self)
+        dialog.run()
+        
+    def refresh_applet(self):
+        if self.get_orient() == PanelApplet.AppletOrient.UP or self.get_orient() == PanelApplet.AppletOrient.DOWN:
+            self.child.set_size_request(self.settings.get_uint("size"), self.get_size())
+        else:
+            self.child.set_size_request(self.get_size(), self.settings.get_uint("size"))
+            
+    def build_context_menu(self):
+        pref_action = Gtk.Action("DynamicSeparatorAppletPreferences", "Preferences", "Open separator preferences", Gtk.STOCK_PREFERENCES)
+        pref_action.connect("activate", self.on_open_preferences)
+        action_group = Gtk.ActionGroup("Dynamic Separator Applet Actions")
+        action_group.add_action(pref_action)
+        
+        self.setup_menu('<menuitem name="DynamicSeparatorAppletPreferences" action="DynamicSeparatorAppletPreferences" />', action_group)
+    
+
+def applet_factory(applet, iid, data):
+    if iid != DynamicApplet.APPLET_ID:
+       return False
+
+    applet.fill_applet()
+
+    return True
+
+PanelApplet.Applet.factory_main(DynamicApplet.FACTORY_ID,
+                                DynamicApplet.__gtype__,
+                                applet_factory, None)
