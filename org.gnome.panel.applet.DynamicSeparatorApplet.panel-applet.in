@@ -1,0 +1,11 @@
+[Applet Factory]
+Id=DynamicSeparatorAppletFactory
+Name=Dynamic Separator Applet Factory
+Location=@CMAKE_INSTALL_PREFIX@/lib/dynamic-separator-applet/dynamic-separator-applet
+Description=Dynamic Separator Applet Factory
+
+[DynamicSeparatorApplet]
+_Name=Dynamic Separator
+_Description=Create a separator with configurable size
+Icon=dynamic-separator-applet
+BonoboId=OAFIID:GNOME_DynamicSeparatorApplet

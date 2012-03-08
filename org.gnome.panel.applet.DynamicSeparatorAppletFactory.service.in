@@ -1,0 +1,3 @@
+[D-BUS Service]
+Name=org.gnome.panel.applet.DynamicSeparatorAppletFactory
+Exec=@CMAKE_INSTALL_PREFIX@/lib/dynamic-separator-applet/dynamic-separator-applet

@@ -1,3 +1,0 @@
-[D-BUS Service]
-Names=org.gnome.panel.applet.DynamicSeparatorFactory
-Exec=/usr/bin/dynamic-separator-applet

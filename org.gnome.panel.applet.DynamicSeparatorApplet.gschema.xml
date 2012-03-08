@@ -1,5 +1,5 @@
 <schemalist>
-    <schema id="org.gnome.panel.applet.DynamicSeparator">
+    <schema id="org.gnome.panel.applet.DynamicSeparatorApplet">
         <key name="size" type="u">
             <default>20</default>
             <summary>Separator size</summary>
