@@ -3,6 +3,10 @@
 from gi.repository import Gtk
 from gi.repository import Gio
 from gi.repository import PanelApplet
+import gettext
+from gettext import gettext as _
+import os
+import sys
 
 class DynamicAppletPreferences():
     def __init__(self, applet):
@@ -12,16 +16,16 @@ class DynamicAppletPreferences():
         dialog = Gtk.Dialog()
         dialog.set_size_request(300, 100)
         
-        dialog.set_title("Panel separator preferences")
+        dialog.set_title(_("Panel separator preferences"))
         dialog.add_button(Gtk.STOCK_CLOSE, 0)
         
         box = Gtk.Box(Gtk.Orientation.HORIZONTAL, 0)
         dialog.get_content_area().pack_start(box, False, False, 30)
-        spin = Gtk.SpinButton.new_with_range(5, 100000, 1)
+        spin = Gtk.SpinButton.new_with_range(1, 100000, 1)
         spin.set_numeric(True)
         self.applet.settings.bind("size", spin, "value", 0)
         
-        box.pack_start(Gtk.Label("Separator size:"), False, False, 8)
+        box.pack_start(Gtk.Label(_("Separator size:")), False, False, 8)
         box.pack_start(spin, True, True, 8)
         
         dialog.show_all()
@@ -29,9 +33,10 @@ class DynamicAppletPreferences():
         dialog.destroy()
 
 class DynamicApplet(PanelApplet.Applet):
-    FACTORY_ID = "DynamicSeparatorFactory"
+    FACTORY_ID = "DynamicSeparatorAppletFactory"
     APPLET_ID = "DynamicSeparatorApplet"
-    SCHEMA = "org.gnome.panel.applet.DynamicSeparator"
+    SCHEMA = "org.gnome.panel.applet.DynamicSeparatorApplet"
+    GETTEXT_PACKAGE = "dynamic-separator-applet"
     
     def fill_applet(self):
         # create child widget for the applet
@@ -39,7 +44,6 @@ class DynamicApplet(PanelApplet.Applet):
         
         # initialize applet settings
         self.settings = Gio.Settings.new_with_path(DynamicApplet.SCHEMA, self.get_property("settings_path"))
-        self.settings.set_uint("size", 30)
         
         # set applet style (no borders)
         self.set_name("dynamic-separator-applet")
@@ -77,9 +81,10 @@ class DynamicApplet(PanelApplet.Applet):
             self.child.set_size_request(self.get_size(), self.settings.get_uint("size"))
             
     def build_context_menu(self):
-        pref_action = Gtk.Action("DynamicSeparatorAppletPreferences", "Preferences", "Open separator preferences", Gtk.STOCK_PREFERENCES)
+        pref_action = Gtk.Action("DynamicSeparatorAppletPreferences", _("Preferences"), None, Gtk.STOCK_PREFERENCES)
         pref_action.connect("activate", self.on_open_preferences)
         action_group = Gtk.ActionGroup("Dynamic Separator Applet Actions")
+        action_group.set_translation_domain(DynamicApplet.GETTEXT_PACKAGE)
         action_group.add_action(pref_action)
         
         self.setup_menu('<menuitem name="DynamicSeparatorAppletPreferences" action="DynamicSeparatorAppletPreferences" />', action_group)
@@ -92,7 +97,20 @@ def applet_factory(applet, iid, data):
     applet.fill_applet()
 
     return True
+    
+def init_gettext():
+    basepath = os.path.abspath(os.path.dirname(sys.argv[0]))
+    if os.path.exists("%s/locale" % basepath):
+        localedir = "%s/locale" % basepath
+    else:
+        localedir = os.path.join(sys.prefix, 'share', 'locale')
+    
+    gettext.bindtextdomain(DynamicApplet.GETTEXT_PACKAGE, localedir)
+    gettext.textdomain(DynamicApplet.GETTEXT_PACKAGE)
+    gettext.install(DynamicApplet.GETTEXT_PACKAGE, localedir = localedir, unicode = True)
 
+
+init_gettext()
 PanelApplet.Applet.factory_main(DynamicApplet.FACTORY_ID,
                                 DynamicApplet.__gtype__,
                                 applet_factory, None)

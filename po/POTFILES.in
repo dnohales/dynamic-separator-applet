@@ -1,0 +1,5 @@
+[encoding: UTF-8] 
+dynamic-separator-applet
+
+[type: gettext/ini]org.gnome.panel.applet.DynamicSeparator.panel-applet.in
+

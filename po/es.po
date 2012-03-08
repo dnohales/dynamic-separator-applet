@@ -1,0 +1,43 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-02-24 19:37-0300\n"
+"PO-Revision-Date: 2012-02-24 19:38-0300\n"
+"Last-Translator: Damián Nohales <damiannohales@gmail.com>\n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: ../dynamic-separator-applet:19
+msgid "Panel separator preferences"
+msgstr "Preferencias del separador del panel"
+
+#: ../dynamic-separator-applet:28
+msgid "Separator size:"
+msgstr "Tamaño del separador:"
+
+#: ../dynamic-separator-applet:85
+msgid "Preferences"
+msgstr "Preferencias"
+
+#: ../org.gnome.panel.applet.DynamicSeparator.panel-applet.in.h:1
+msgid "Create a separator with configurable size"
+msgstr "Crea un separador con tamaño configurable"
+
+#: ../org.gnome.panel.applet.DynamicSeparator.panel-applet.in.h:2
+msgid "Dynamic Separator"
+msgstr "Separador Dinámico"
+
+#~ msgid "Open separator preferences"
+#~ msgstr "Abrir preferencias del separador"
+
+#~ msgid "Create a dynamic separator"
+#~ msgstr "Crea un separador dinámico"
